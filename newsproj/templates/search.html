@@ -1,0 +1,70 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+{% load custom_tags %}
+
+{% block title %}
+Articles
+{% endblock title %}
+
+{% block content %}
+    <h1>Параметры поиска</h1>
+    <h3>{{ time_now|date:'M d Y' }}</h3>
+
+    <form action="" method="get">
+        {{ filterset.form.as_p }}
+        <input type="submit" value="Найти" />
+    </form>
+
+    <hr style="height:3px">
+
+    <h3>Количество {{ search | length }}</h3>
+
+   {% if search %}
+       <table>
+           <tr>
+               <td><b>Дата публикации</b></td>
+               <td><b>Название</b></td>
+               <td><b>Описание</b></td>
+               <td><b>Автор</b></td>
+               <td><b>Категория</b></td>
+           </tr>
+
+           {% for article in search %}
+           <tr>
+               <td>
+                   {{ article.datetime | date:'d M Y' }}
+                   {{ article.datetime | time:'H:i' }}
+               </td>
+               <td><a href="{% url 'article' article.id %}">{{ article.name }}</a></td>
+               <td>{{ article.description|truncatewords:20 }}</td>
+               <td>{{ article.author }}</td>
+               <td>{{ article.category.name }}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Новостей нет</h2>
+   {% endif %}
+
+{% if page_obj.has_previous %}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+
+{% endblock content %}

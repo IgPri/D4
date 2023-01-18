@@ -1,0 +1,35 @@
+{%extends 'flatpages/default.html'%}
+
+{% load custom_filters %}
+
+{% block title %}
+Article
+{% endblock title %}
+
+{% block content %}
+<h1>{{ article.title | censor }}</h1>
+<h3>{{ article.author }}</h3>
+{% if article %}
+        <table>
+            <tr>
+                <td><b>Дата и время публикации</b></td>
+                <td><b>Название</b></td>
+                <td><b>Описание</b></td>
+                <td><b>Автор</b></td>
+                <td><b>Категория</b></td>
+            </tr>
+            <tr>
+                <td>
+                    {{ article.datetime | date:'d-M-Y' }}
+                    {{ article.datetime | time:'H:i' }}
+                </td>
+                <td>{{ article.name }}</td>
+                <td>{{ article.description | censor }}</td>
+                <td>{{ article.author }}</td>
+                <td>{{ article.category.name }}</td>
+            </tr>
+        </table>
+    {% else %}
+        <h2>Новостей нет:(</h2>
+    {% endif %}
+{% endblock content %}
